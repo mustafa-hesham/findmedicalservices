@@ -1,0 +1,65 @@
+{% extends 'main.html' %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+<br /><br />
+
+<h2 align = "center" id="title">حجوزاتي</h2><br /><br /><br />
+<div class="container">
+{% if not reservations %}
+<h3 style="text-align : center;">لا يوجد لديك أي حجوزات</h3><br />
+<h3 style="text-align : center;"><a href="{% url  'index' %}">العودة للصفحة الرئيسية</a></h3>
+{% endif %}
+{% for order in reservations %}
+{% if not order.is_served and not order.is_confirmed and not order.is_declined and not order.reservationNotAnswered %}
+<form name = "view_order" action="{% url 'accounts:review_order' %}" method = "POST">
+        {% csrf_token %}
+        <input name="order_id" type="hidden" value="{{ order.id }}"/>
+        <input name="service" type="hidden" value="{{ order.service }}"/>
+        <button type="submit" class="btn btn-info btn-lg fa-pull-left" id="viewbtn">تعديل الحجز</button>
+</form>
+{% elif order.is_declined %}
+<button type="submit" class="btn btn-danger btn-lg fa-pull-left" id="viewbtn" disabled = "disabled">حجز مرفوض</button>
+{% elif order.is_served %}
+<button type="submit" class="btn btn-info btn-lg fa-pull-left" id="viewbtn" disabled = "disabled">حجز مُنجز</button>
+{% elif order.reservationNotAnswered %}
+<button type="submit" class="btn btn-warning btn-lg fa-pull-left" id="viewbtn" disabled = "disabled">حجز فائت</button>
+{% elif order.is_confirmed and not order.is_served %}
+<button type="submit" class="btn btn-success btn-lg fa-pull-left" id="viewbtn" disabled = "disabled">حجز جاري</button>
+{% endif %}
+<h2 id="user-name" style="color: rgb(331, 31, 31);">{{ order.center.name }}</h2>
+<h4 id="user-phone" style="color : rgb(60, 92, 107); margin-bottom: 15px;">{{ order.service }}</h4>
+<h5 id="checkIn">من: {{ order.checkIn|date:'Y-m-d' }}</h5>
+<h5 id="checkOut" style="margin-bottom: 15px;">إلى: {{ order.checkOut|date:'Y-m-d' }}</h5>
+<h5 id="checkOut">عدد الأيام: {{ order.numberOfDays}}</h5>
+<hr>
+{% endfor %}
+</div>
+<br/><br/>
+
+  <div class="container" style="text-align :center; color :  #1cbab2;"><h4>صفحة</h4></div>
+  <nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if reservations.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="{% url 'accounts:user_orders' reservations.previous_page_number %}?service_name={{ service }}" tabindex="-1">سابقة</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"></li>
+    {% endif %}
+    {% for i in reservations.paginator.page_range %}
+    {% if reservations.number == i %}
+    <li class="page-item page-link disabled" style="color : grey;">{{ i }}</li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="{% url 'accounts:user_orders' i %}?service_name={{ service }}">{{ i }}</a></li>
+    {% endif %}
+    {% endfor %}
+    {% if reservations.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="{% url 'accounts:user_orders' reservations.next_page_number %}?service_name={{ service }}">تالية</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

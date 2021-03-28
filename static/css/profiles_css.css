@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css?family=Comfortaa');
+@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Markazi+Text:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;800&family=Cairo:wght@900&display=swap');
+
+#box-in a {
+  color: rgb(57, 139, 197);
+}
+
+#box-in a:hover {
+  text-decoration: none;
+}
+
+.flexin {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: center;
+  }
+  
+  .flexin #box-in {
+    border: 1px black solid;
+    box-shadow: 2px 2px;
+    width: 40%;
+    margin: 15px;
+    padding: 10px;
+  }
+  
+  .flexin h3 {
+      text-align: center;
+      font-family: Almarai;
+      margin-bottom: 5%;
+      background: rgb(250, 252, 252);
+
+  }
+  @media (max-width: 780px) { 
+  
+      .flexin #box-in {
+        width: 80%;
+      }
+      .flexin {
+        justify-content: center;
+      }
+    }

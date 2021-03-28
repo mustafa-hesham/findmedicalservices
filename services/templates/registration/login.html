@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+        .center {
+        margin: 0 auto;
+        width: 52%;
+        padding: 10px;
+        align : center;
+        }
+        #title {
+            font-family:  'Markazi Text', serif;
+            color : #1cbab2;
+            font-size : 50px;
+        }
+        .error {
+            color: red;
+            margin-left: 5px;
+        }
+</style>
+<br />
+<h2 align = "center" id="title">دخول</h2><br />
+<div class="center">
+    <form method="POST" class="center">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input id = "form_submit_btn" type="submit" value='دخول' class="btn btn-info btn-block"/>
+    </form>
+    {% for message in error_messages %}
+
+                    <div class="alert alert-success">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+
+                        {{ message }}
+
+                    </div>
+            {% endfor %}
+</div>
+{% endblock %}

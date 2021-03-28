@@ -1,0 +1,28 @@
+<form method="GET" name="searchbar" action="{% url 'results' 1 %}">
+<div class="wrapper">
+    <div class="custom-select22">
+	    <select name="address_gov_sb" required id="id_address_gov_sb">
+                {% for gov, value in gov_list %}
+                    {% if value == user.address_gov and not request.GET.address_gov_sb %}
+                    <option value="{{ gov }}" selected>{{ value }}</option>
+                    {% elif value == request.GET.address_gov_sb %}
+                    <option value="{{ gov }}" selected>{{ value }}</option>
+                    {% else %}
+                    <option value="{{ gov }}">{{ value }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+	</div>
+	<input type="text" name="searchByName" {% if searchByName %} value = {{ searchByName }} {% endif %} class="input" placeholder="البحث بالاسم">
+        <button class="searchbtn" type="submit"><i class="fas fa-search"></i></button>
+<div class="break"></div>
+     <div id="options-newline">
+	    <ul name="service_sb" id="service_sb">
+                {% for value in serv_list %}
+                    <li><label for="{{ value }}"><input type="checkbox" name="services" value="{{ value.id }}" id="id_services_{{ value.id }}" 
+                    {% if services_list and value.id|stringformat:"i" in services_list %} checked {% endif %}>{{ value }}</label>
+                {% endfor %}
+            </ul>
+	</div> 
+</div>
+</form>

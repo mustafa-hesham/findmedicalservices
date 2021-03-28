@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+
+<br /><br />
+<div class="container">
+<h2 align = "center" id="title">تم الحجز بنجاح</h2><br /><br /><br />
+<p><h4 align = "center" style="text-align : center;">قد يقوم أحد العاملين بالمنشأة الطبية بالاتصال بك هاتفيًا لتأكيد الحجز والحصول على مزيد من التفاصيل</h4></p>
+<br /><br />
+<h4 style="text-align : center;"><a href="{% url 'index' %}">العودة للصفحة الرئيسية</a></h4>
+</div>
+{% endblock %}

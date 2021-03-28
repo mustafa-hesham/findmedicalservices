@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+<br /><br />
+
+<h2 align = "center" id="title">حجوزات {{ service }} مرفوضة</h2><br /><br /><br />
+<div class="container">
+{% if not orders_list %}
+<h3 style="text-align : center;">لا يوجد حجوزات {{ service }} مرفوضة</h3><br />
+<h3 style="text-align : center;"><a href="{% url  'accounts:center_profile' %}">العودة لصفحة المنشأة الطبية</a></h3>
+{% endif %}
+{% for order in orders_list %}
+<form name = "view_order" action="{% url 'accounts:review_order' %}" method = "POST">
+        {% csrf_token %}
+        <input name="order_id" type="hidden" value="{{ order.id }}"/>
+        <input name="serviceObj" type="hidden" value="{{ service }}"/>
+        <button type="submit" class="btn btn-info btn-lg fa-pull-left" id="viewbtn">تعديل الحجز</button>
+</form>
+
+<h2 id="user-name" style="color: rgb(331, 31, 31);">{{ order.user.name }}</h2>
+<h4 id="user-phone" style="color : rgb(60, 92, 107); margin-bottom: 15px;">{{ order.userPhones }}</h4>
+<h5 id="checkIn">من: {{ order.checkIn|date:'Y-m-d' }}</h5>
+<h5 id="checkOut" style="margin-bottom: 15px;">إلى: {{ order.checkOut|date:'Y-m-d' }}</h5>
+<h5 id="checkOut">عدد الأيام: {{ order.numberOfDays}}</h5>
+<hr>
+{% endfor %}
+</div>
+<br/><br/>
+
+  <div class="container" style="text-align :center; color :  #1cbab2;"><h4>صفحة</h4></div>
+  <nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if orders_list.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="{% url 'accounts:view_rejected_orders' orders_list.previous_page_number %}?service_name={{ service }}" tabindex="-1">سابقة</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"></li>
+    {% endif %}
+    {% for i in orders_list.paginator.page_range %}
+    {% if orders_list.number == i %}
+    <li class="page-item page-link disabled" style="color : grey;">{{ i }}</li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="{% url 'accounts:view_rejected_orders' i %}?service_name={{ service }}">{{ i }}</a></li>
+    {% endif %}
+    {% endfor %}
+    {% if orders_list.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="{% url 'accounts:view_rejected_orders' orders_list.next_page_number %}?service_name={{ service }}">تالية</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

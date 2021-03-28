@@ -1,0 +1,76 @@
+{% extends 'main.html' %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+<div class="centerReserv">
+<form id = "center_register_form" method="POST" action = "{% url 'save_reservation' %}">
+{% csrf_token %}
+<h2 align = "center" id="title">حجز جديد</h2><br />
+<h4> {{ form.center.label }}</h4> <h3>{{ form.center.value|default_if_none:center.name }}</h3>
+<h4> {{ form.user.label }} </h4><h3>{{ form.user.value|default_if_none:user.name }}</h3>
+<br />
+<input name="user_id" type="hidden" value="{{ user.id }}"/>
+<input name="center_id" type="hidden" value="{{ center.id }}"/>
+<h4>{{ form.userPhones.label }}</h4>
+<p> <select name="userPhones" id="id_userPhones">
+{% for phone in userPhones %}
+<h3><option value="{{ phone.getNumber}}">{{ phone.getNumber  }}</option></h3>
+{% endfor %}
+</select></p>
+<h4>{{ form.service.label }}</h4>
+<p> <select name="service" id="id_service">
+{% for serv in serv_list %}
+<option value="{{ serv.id }}">{{ serv  }}</option>
+{% endfor %}
+</select></p>
+<h4>{{ form.checkIn.label }}</h4>
+<p> {{ form.checkIn }}</p>
+<h4>{{ form.checkOut.label }}</h4>
+<p> {{ form.checkOut }}</p>
+<button type="submit" class="btn btn-info btn-lg" id="reservation">حجز</button>
+</form>
+</div>
+<script>
+    var a = new Date();
+    var timeZoneOffset = 2*60 //Set timezone to Egypt time.
+    a.setMinutes(a.getMinutes()  + timeZoneOffset );
+    document.getElementById('datePicker').valueAsDate = a; //Set the value of checkin datepicker to today.
+    document.getElementById('datePicker1').valueAsDate = a; //Set the value of checkout datepicker to today.
+
+    var formValues = document.querySelector('#center_register_form');
+
+    formValues.addEventListener('change', (event) => { //Check that checkout date is after checkin date and checkin is not less than today.
+       var checkin     = document.getElementById('datePicker').value;
+       var checkout    = document.getElementById('datePicker1').value;
+       var checkinDate = document.getElementById('datePicker').valueAsDate;
+       checkinDate.setHours(a.getHours()+1);
+       checkinDate.setMinutes(a.getMinutes());
+       $(".error").remove();
+       $("#reservation").prop('disabled', false);
+        if (checkout < checkin)
+        {
+            $('#datePicker1').after('<span class="error"><br />تاريخ الخروج قبل تاريخ الدخول!</span>');
+            $('#datePicker1').focus();
+            $("#reservation").prop('disabled', true);
+        }
+        
+        else if (checkinDate < a)
+            {
+               $('#datePicker').after('<span class="error"><br />تاريخ الدخول قبل اليوم!</span>');
+               $('#datePicker').focus();
+               $("#reservation").prop('disabled', true);
+            }
+        else
+            {
+                $(".error").remove();
+                $("#reservation").prop('disabled', false);
+                $("#datePicker1").prop('disabled', false);
+            }
+        
+        if ($("#reservation").is(':disabled'))
+            {
+                $('#reservation').after('<span class="error"><br />زر حجز غير مفعل حتى تُكتب البيانات بطريقة صحيحة</span>');
+            }
+        
+    });
+</script>
+{% endblock %}
