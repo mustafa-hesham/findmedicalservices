@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+
+<br /><br />
+<div class="container">
+<h2 align = "center" id="title">تم التعديل بنجاح</h2><br /><br /><br />
+{% if user.user_is_center %}
+<h4 style="text-align : center;"><a href="{% url 'accounts:center_profile' %}">العودة لصفحة المنشأة الطبية</a></h4><br />
+<h4 style="text-align : center;"><a href="{% url 'accounts:center_services_count' %}">تعديل عدد وحدات الخدمة</a></h4><br />
+{% endif %}
+<h4 style="text-align : center;"><a href="{% url 'index' %}">العودة للصفحة الرئيسية</a></h4>
+</div>
+{% endblock %}

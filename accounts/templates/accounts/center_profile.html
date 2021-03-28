@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+<link rel="stylesheet" href="{% static 'css\profiles_css.css'%}">
+<br />
+<h2 align = "center" id="title">خدمات {{ centername }}</h2><br /><br /><br />
+<div class="flexin">
+    {% for remain, serv_count, serv, cur_count, new_count in serv_list %}
+    <div id = "box-in" style="background-color : rgb({{ serv.id|make_list|first }}4, {{ serv.id|make_list|first }}9{{ serv.id|make_list|last }}, {{ serv.id|make_list|first }}{{ serv.id|make_list|last }}5);">
+        <form id = "prev_orders{{ serv.id }}" method = "POST" action ="{% url 'accounts:view_past_orders' 1 %}">
+        {% csrf_token %}
+        <input name="service_name" type="hidden" value="{{ serv }}"/>
+        <h6 style="float : left;"><a href="#" role="button" onclick="document.getElementById('prev_orders{{ serv.id }}').submit()">&nbsp;سابق</a></h6>
+        </form>
+        <form id = "rejected_orders{{ serv.id }}" method = "POST" action ="{% url 'accounts:view_rejected_orders' 1 %}">
+        {% csrf_token %}
+        <input name="service_name" type="hidden" value="{{ serv }}"/>
+        <h6 style="float : left;"><a href="#" role="button" onclick="document.getElementById('rejected_orders{{ serv.id }}').submit()">مرفوض</a></h6>
+        </form>
+        <h3>{{ serv }}</h3>
+        <br />
+        <h4 style="float : left;">{{ serv_count }}</h4>
+        <h4>عدد الوحدات الكلي</h4>
+        <hr>
+        <h4 style="float : left;">{{ cur_count }}</h4>
+        {% if cur_count != 0 %}
+        <form id="current_orders{{ serv.id }}" method = "POST" action = "{% url 'accounts:view_current_orders' 1 %}">
+        {% csrf_token %}
+        <input name="service_name" type="hidden" value="{{ serv }}"/>
+        <h4><a href="#" role="button" onclick="document.getElementById('current_orders{{ serv.id }}').submit()">عدد الوحدات الشاغلة</a></h4>
+        </form>
+        {% else %}
+        <h4>عدد الوحدات الشاغلة</h4>
+        {% endif %}
+        <hr>
+        <h4 style="float : left;">{{ remain }}</h4>
+        <h4>عدد الوحدات المتاحة</h4>
+        <hr>
+        <h4 style="float : left;">{{ new_count }}</h4>
+        <h4>عدد الطلبات الجديدة</h4>
+        {% if new_count %}
+        <div class="col-md-12 text-center">
+        <form method="POST" action = "{% url 'accounts:view_orders' 1 %}">
+        {% csrf_token %}
+        <input name="centerObj" type="hidden" value="{{ centername }}"/>
+        <input name="service_name" type="hidden" value="{{ serv }}"/>
+        <button class="btn btn-outline-light my-2 my-sm-0" type="submit" style="color : black;">الرد على الطلبات الجديدة</button>
+        </form>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

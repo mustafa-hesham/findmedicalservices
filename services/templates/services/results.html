@@ -1,0 +1,69 @@
+{% extends 'main.html' %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+{% block searchbar %}
+    
+      <div class="container">
+      <br />
+          <h1 style ="color : #1cbab2; font-family : 'Markazi Text', serif;">نتائج البحث</h1>
+        <div id='searchbar'>
+    {% include 'searchbar.html' with gov_list=gov_list serv_list=serv_list %}
+    </div>
+      </div>
+    {% endblock %}
+    {% if not centers_list %}
+    <div class="container" style="text-align: center; color :  rgb(97, 90, 90);"><h1>لا يوجد نتائج بحث</h1></div>
+    {% endif %}
+    <div class="container">
+        {% for center in centers_list %}
+        <h2 id="center-name">{{ center.name }}</h2>
+        {% for service in center.services.all %}
+        <h6 id="center-service">{{ service }} &nbsp;</h6>
+        {% endfor %}
+        <form name = "reservation" action="{% url 'reservation' %}" method = "POST">
+        {% csrf_token %}
+        <input name="user" type="hidden" value="{{ user.name }}"/>
+        <input name="user_id" type="hidden" value="{{ user.id }}"/>
+        <input name="center" type="hidden" value="{{ center.name }}"/>
+        <input name="center_id" type="hidden" value="{{ center.id }}"/>
+        <button type="submit" class="btn btn-info btn-lg fa-pull-left" id="acceptbtn">حجز</button>
+        </form>
+        <br/><br/>
+        <h4 id="center-address">{{ center.address_gov }}</h4>
+        <h5 id="center-street">{{ center.address_street }}</h5>
+        {% for phone in center.phonenumbers_set.all %}
+        <h5 id="center-phone">{{ phone.phone }} &nbsp;</h5>
+        {% endfor %}
+        <br />
+        <hr>
+    {% endfor %}
+    </div>
+
+    <br/><br/>
+  <div class="container" style="text-align :center; color :  #1cbab2;"><h4>صفحة</h4></div>
+  <nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if centers_list.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="{% url 'results' centers_list.previous_page_number %}?address_gov_sb={{ governorate }}&searchByName={{ searchByName }}{% for value in services_list %}&services={{ value }}{% endfor %}" tabindex="-1">سابقة</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"></li>
+    {% endif %}
+    {% for i in centers_list.paginator.page_range %}
+    {% if centers_list.number == i %}
+    <li class="page-item page-link disabled" style="color : grey;">{{ i }}</li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="{% url 'results' i %}?address_gov_sb={{ governorate }}&searchByName={{ searchByName }}{% for value in services_list %}&services={{ value }}{% endfor %}">{{ i }}</a></li>
+    {% endif %}
+    {% endfor %}
+    {% if centers_list.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="{% url 'results' centers_list.next_page_number %}?address_gov_sb={{ governorate }}&searchByName={{ searchByName }}{% for value in services_list %}&services={{ value }}{% endfor %}">تالية</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}  

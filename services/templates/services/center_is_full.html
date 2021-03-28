@@ -1,0 +1,11 @@
+{% extends 'main.html' %}
+{% block content %}
+{% block title %}<title>{{ title }}</title>{% endblock %}
+<br /><br />
+
+<h2 align = "center" id="title">{{ center }}</h2><br /><br /><br />
+<div class="container">
+<h3 style="text-align : center;">المنشأة الطبية محجوزة بالكامل</h3><br />
+<h3 style="text-align : center;"><a href="{% url  'index' %}">العودة للصفحة الرئيسية</a></h3>
+</div>
+{% endblock %}
